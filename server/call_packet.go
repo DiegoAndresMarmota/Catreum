@@ -5,20 +5,19 @@ import (
 	"sync"
 )
 
-
 type CallPacket struct {
-	direction 	RemoteDirections
-	network     map[RemoteDirections]*CallPacket
-	channel   	chan RemoteRespCall
-	pack   		sync.RWMutex
+	direction RemoteDirections
+	network   map[RemoteDirections]*CallPacket
+	channel   chan RemoteRespCall
+	pack      sync.RWMutex
 }
 
 
 func NewCallPacket(direction RemoteDirections) *CallPacket {
 	return &CallPacket{
-		direction: 	direction,
-		channel: 	make(chan RemoteRespCall, 3000),
-		network: 	make(map[RemoteDirections]*CallPacket),
+		direction: direction,
+		channel:   make(chan RemoteRespCall, 3000),
+		network:   make(map[RemoteDirections]*CallPacket),
 	}
 }
 
@@ -28,10 +27,10 @@ func (c *CallPacket) Channel() <-chan RemoteRespCall {
 }
 
 
-func (c *CallPacket) Networking(ntw Carrier) error {
+func (c *CallPacket) Networking(nt *CallPacket) error {
 	c.pack.Lock()
 	defer c.pack.Unlock()
-	c.network[ntw.Direction()] = ntw
+	c.network[nt.Direction()] = nt
 	return nil
 }
 
@@ -51,11 +50,9 @@ func (c *CallPacket) TransferMessage(to RemoteDirections, Unpack []byte) error {
 	}
 
 	pack.channel <- RemoteRespCall{
-		Call: 		c.direction,
-		Unpack: 	Unpack,
-
+		Call:   c.direction,
+		Unpack: Unpack,
 	}
 
 	return nil
 }
-
