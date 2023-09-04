@@ -13,8 +13,8 @@ type RemoteRespCall struct {
 
 
 type Carrier interface {
-	Return() 							<-chan RemoteRespCall
-	Message(Carrier) 					error
-	Receive(RemoteDirections, []byte) 	error
+	Sender() 							<-chan RemoteRespCall
+	Transfer(Carrier) 					error
+	Receiver(RemoteDirections, []byte) 	error
 	Direction()							RemoteDirections
 } 
