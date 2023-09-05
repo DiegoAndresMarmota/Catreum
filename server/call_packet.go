@@ -7,9 +7,9 @@ import (
 
 type CallPacket struct {
 	direction RemoteDirections
-	network   map[RemoteDirections]*CallPacket
 	channel   chan RemoteRespCall
 	pack      sync.RWMutex
+	network   map[RemoteDirections]*CallPacket
 }
 
 
